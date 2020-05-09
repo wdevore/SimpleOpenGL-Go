@@ -33,7 +33,7 @@ const (
 	layout (location = 0) in vec3 aPos;
 
 	uniform mat4 model;
-	// This uniforms are set once at the start of the client App
+	// These uniforms are set once at the start of the client App
 	uniform mat4 view;
 	uniform mat4 projection;
 	
