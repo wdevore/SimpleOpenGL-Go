@@ -166,7 +166,7 @@ func draw(vao uint32, window *glfw.Window, program uint32) {
 
 	gl.BindVertexArray(vao)
 
-	orbitApproach3()
+	orbitApproach2()
 
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model.Matrix()[0])
 
