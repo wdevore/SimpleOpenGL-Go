@@ -166,30 +166,7 @@ func draw(vao uint32, window *glfw.Window, program uint32) {
 
 	gl.BindVertexArray(vao)
 
-	// To cause the square to orbit at a radius of 50.0
-	// We either apply transform in reverse order (i.e. pre-multiply) here.
-	// Or we use a post-mutiply, as below, using a second matrix (aka modelOrb)
-	model.SetScale3Comp(1.0, 1.0, 1.0)
-
-	// Method #1
-	// model.Rotate(degreeToRadians * angle)
-	// model.TranslateBy3Comps(50.0, 0.0, 0.0)
-
-	model.TranslateBy3Comps(0.0, 0.0, 0.0)
-	model.Rotate(degreeToRadians * -angle)
-	model.ScaleByComp(30.0, 30.0, 1.0)
-
-	// Method #2
-	modelOrb.SetScale3Comp(1.0, 1.0, 1.0)
-	modelOrb.Rotate(degreeToRadians * angle)
-	modelOrb.TranslateBy3Comps(50.0, 0.0, 0.0)
-	// Or method #3 using Inverse
-	// modelOrb.SetTranslate3Comp(-50.0, 0.0, 0.0)
-	// modelOrb.Rotate(degreeToRadians * -angle)
-	// modelOrb.ScaleByComp(1.0, 1.0, 1.0)
-	// modelOrb.Inverse()
-
-	model.PostMultiply(modelOrb)
+	orbitApproach3()
 
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model.Matrix()[0])
 
@@ -203,6 +180,53 @@ func draw(vao uint32, window *glfw.Window, program uint32) {
 	window.SwapBuffers()
 }
 
+//------------------------------------------------------------------
+// Each orbit approach produces the same results: the square orbits the
+// center of the window CCW. The square does not rotate because its rotation
+// is the opposite with respect to the orbit.
+//------------------------------------------------------------------
+
+func orbitApproach1() {
+	model.SetScale3Comp(1.0, 1.0, 1.0)
+
+	model.Rotate(degreeToRadians * angle)
+	model.TranslateBy3Comps(50.0, 0.0, 0.0)
+
+	model.TranslateBy3Comps(0.0, 0.0, 0.0)
+	model.Rotate(degreeToRadians * -angle)
+	model.ScaleByComp(30.0, 30.0, 1.0)
+}
+
+func orbitApproach2() {
+	model.SetScale3Comp(1.0, 1.0, 1.0)
+
+	model.TranslateBy3Comps(0.0, 0.0, 0.0)
+	model.Rotate(degreeToRadians * -angle)
+	model.ScaleByComp(30.0, 30.0, 1.0)
+
+	// Method #2
+	modelOrb.SetScale3Comp(1.0, 1.0, 1.0)
+	modelOrb.Rotate(degreeToRadians * angle)
+	modelOrb.TranslateBy3Comps(50.0, 0.0, 0.0)
+
+	model.PostMultiply(modelOrb)
+}
+func orbitApproach3() {
+	model.SetScale3Comp(1.0, 1.0, 1.0)
+	model.TranslateBy3Comps(0.0, 0.0, 0.0)
+	model.Rotate(degreeToRadians * -angle)
+	model.ScaleByComp(30.0, 30.0, 1.0)
+
+	// Or method #3 using Inverse
+	modelOrb.SetTranslate3Comp(-50.0, 0.0, 0.0)
+	modelOrb.Rotate(degreeToRadians * -angle)
+	modelOrb.ScaleByComp(1.0, 1.0, 1.0)
+	modelOrb.Inverse()
+
+	model.PostMultiply(modelOrb)
+}
+
+// Used if you want to force a dimension different than the window
 func configureProjections(deviceWidth, deviceHeight, virtualWidth, virtualHeight int) (ratioCorrection float64) {
 
 	// Calc the aspect ratio between the physical (aka device) dimensions and the
