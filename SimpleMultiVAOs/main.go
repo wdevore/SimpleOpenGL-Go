@@ -100,53 +100,41 @@ func buildSquare() uint32 {
 	// VAO "captures" activity acted on buffers WHILE the VAO has
 	// been activated via binding.
 
-	// --------- Square Scope capturing STARTs here -------------------
+	// --------- Scope capturing STARTs here -------------------
 	vao := makeVao()
 
 	// Activate VBO buffer while in the VAOs scope
 	vbo := makeVbo()
 
 	bindVao(vao)
+
 	bindVbo(square, vbo)
 
 	// Activate EBO buffer while in the VAOs scope
 	makeEbo(indicesSqr)
 
-	// Specify the vertex attribute layout. This specifies--how during transmission--opengl
-	// will pass the data to the shader and how the shader will extract the data.
-	vertexInputAttrb := uint32(0)
-	sizeOfInputAttrb := int32(3)
-	stride := int32(0)
-	gl.VertexAttribPointer(vertexInputAttrb, sizeOfInputAttrb, gl.FLOAT, false, stride, nil)
-	gl.EnableVertexAttribArray(vertexInputAttrb)
 	gl.BindVertexArray(0) // close scope
-	// --------- Square Scope capturing ENDs here -------------------
+	// --------- Scope capturing ENDs here -------------------
 
 	return vao
 }
 
 func buildTri() uint32 {
-	// --------- Square Scope capturing STARTs here -------------------
+	// --------- Scope capturing STARTs here -------------------
 	vao := makeVao()
 
 	// Activate VBO buffer while in the VAOs scope
 	vbo := makeVbo()
 
 	bindVao(vao)
+
 	bindVbo(triangle, vbo)
 
 	// Activate EBO buffer while in the VAOs scope
 	makeEbo(indicesTri)
 
-	// Specify the vertex attribute layout. This specifies--how during transmission--opengl
-	// will pass the data to the shader and how the shader will extract the data.
-	vertexInputAttrb := uint32(0)
-	sizeOfInputAttrb := int32(3)
-	stride := int32(0)
-	gl.VertexAttribPointer(vertexInputAttrb, sizeOfInputAttrb, gl.FLOAT, false, stride, nil)
-	gl.EnableVertexAttribArray(vertexInputAttrb)
 	gl.BindVertexArray(0) // close scope
-	// --------- Square Scope capturing ENDs here -------------------
+	// --------- Scope capturing ENDs here -------------------
 
 	return vao
 }
