@@ -59,13 +59,14 @@ func loadImage(path string) (*image.NRGBA, error) {
 	// Transfer data to image
 	draw.Draw(nrgba, nrgba.Bounds(), img, bounds.Min, draw.Src)
 
-	// Flip horizontally or along Y-axis
+	// Flip horizontally or around Y-axis
 	// for j := 0; j < nrgba.Bounds().Dy(); j++ {
 	// 	for i := 0; i < nrgba.Bounds().Dx(); i++ {
 	// 		flippedImg.Set(bounds.Dx()-i, j, nrgba.At(i, j))
 	// 	}
 	// }
 
+	// Flip vertically or around the X-axis
 	for j := 0; j < nrgba.Bounds().Dy(); j++ {
 		for i := 0; i < nrgba.Bounds().Dx(); i++ {
 			flippedImg.Set(i, bounds.Dy()-j, nrgba.At(i, j))
