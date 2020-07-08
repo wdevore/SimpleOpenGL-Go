@@ -10,7 +10,7 @@ import (
 
 const (
 	width  = 800
-	height = 500
+	height = 800
 )
 
 var quitTriggered bool
