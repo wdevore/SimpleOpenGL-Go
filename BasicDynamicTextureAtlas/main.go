@@ -199,11 +199,6 @@ func buildQuadTexture(textureAtlas *TextureAtlas) (vao, tbo, vbo uint32) {
 
 	tbo = makeTbo()
 
-	// image, err := loadImage("texture-atlas.png")
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	atlas := textureAtlas.Atlas()
 
 	bindTbo(atlas, tbo)
