@@ -166,12 +166,12 @@ func buildQuadTexture(textureAtlas *TextureAtlas) (vao, tbo, vbo uint32) {
 
 	//       texture-space
 	//     0,1 D           C 1,1
-	//  |      *-----------*
+	//  ^      *-----------*
 	//  |      |           |
 	//  |+Y    |     _     |
 	//  |      |           |
 	//  |      |           |
-	//  v      *-----------*
+	//        *-----------*
 	//       0,0           1,0
 	//         A           B
 

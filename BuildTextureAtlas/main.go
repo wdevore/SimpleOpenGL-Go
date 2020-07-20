@@ -143,21 +143,39 @@ func main() {
 
 	w.WriteString(textureAtlasFile + "\n")
 	w.WriteString(fmt.Sprintf("%dx%d\n", packSize, packSize))
+
 	for _, block := range blocks {
 		if block.fit != nil {
 			fit := block.fit
 			// Write the 4 corners of the block:
 			// bottom-left, bottom-right, top-right, top-left
-			botlefX := fit.x
+
+			//       texture-space (ST "not UV")
+			//     D (0,1)        (1,1) C
+			//  ^      *-----------*
+			//  |      |           |
+			//  |+Y    |     _     |
+			//  |      |           |
+			//  |      |           |
+			//         *-----------*
+			//     A (0,0)        (1,0) B
+
+			botlefX := fit.x // A
 			botlefY := fit.y
-			botrigX := fit.x + block.w
+			botrigX := fit.x + block.w // B
 			botrigY := fit.y
-			toprigX := fit.x + block.w
+			toprigX := fit.x + block.w // C
 			toprigY := fit.y + block.h
-			toplefX := fit.x
+			toplefX := fit.x // D
 			toplefY := fit.y + block.h
 
-			w.WriteString(fmt.Sprintf("%s|%d,%d:%d,%d:%d,%d:%d,%d\n", block.name, botlefX, botlefY, botrigX, botrigY, toprigX, toprigY, toplefX, toplefY))
+			w.WriteString(fmt.Sprintf("%s|%d,%d:%d,%d:%d,%d:%d,%d\n",
+				block.name,
+				botlefX, botlefY,
+				botrigX, botrigY,
+				toprigX, toprigY,
+				toplefX, toplefY,
+			))
 		}
 	}
 	w.Flush()
