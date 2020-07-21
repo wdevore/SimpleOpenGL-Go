@@ -20,8 +20,7 @@ func bindTexture(tbo uint32) {
 }
 
 func bindTbo(texture *image.NRGBA, tbo uint32) {
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, tbo)
+	bindTexture(tbo)
 	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
 
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
