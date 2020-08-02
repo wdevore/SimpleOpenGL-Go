@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"runtime"
 	"time"
 
@@ -9,8 +10,9 @@ import (
 )
 
 const (
-	width  = 800
-	height = 800
+	width           = 1200
+	height          = 800
+	degreeToRadians = math.Pi / 180.0
 )
 
 var (
@@ -37,7 +39,70 @@ func main() {
 
 	quadVao, quadTbo, quadVbo = buildQuadTexture(textureAtlas)
 
-	gl.Viewport(0, 0, width, height)
+	// -----------------------------------------------------------
+	viewport := NewViewport()
+	viewport.SetDimensions(0, 0, width, height)
+	viewport.Apply()
+
+	projection := buildProjection()
+
+	view := buildView()
+
+	// -----------------------------------------------------------
+	angle := 0.0
+	modelTri := NewMatrix4()
+	modelTri.SetRotation(angle * degreeToRadians)
+	modelTri.TranslateBy2Comps(100.0, 0.0)
+	modelTri.ScaleByComp(100.0, 100.0, 1.0)
+	mo := modelTri.Matrix()
+
+	// -----------------------------------------------------------
+	gl.UseProgram(defaultProgram)
+
+	projLoc := gl.GetUniformLocation(defaultProgram, gl.Str("projection\x00"))
+	if projLoc < 0 {
+		panic("NodeManager: couldn't find 'projection' uniform variable")
+	}
+	pm := projection.Matrix().Matrix()
+	gl.UniformMatrix4fv(projLoc, 1, false, &pm[0])
+
+	viewLoc := gl.GetUniformLocation(defaultProgram, gl.Str("view\x00"))
+	if viewLoc < 0 {
+		panic("NodeManager: couldn't find 'view' uniform variable")
+	}
+	gl.UniformMatrix4fv(viewLoc, 1, false, &view.Matrix()[0])
+
+	modelTriLoc := gl.GetUniformLocation(defaultProgram, gl.Str("model\x00"))
+	if modelTriLoc < 0 {
+		panic("World: couldn't find 'model' uniform variable")
+	}
+
+	// -----------------------------------------------------------
+	modelQuad := NewMatrix4()
+	modelQuad.ScaleByComp(64.0, 64.0, 1.0)
+	moq := modelQuad.Matrix()
+
+	gl.UseProgram(textureProgram)
+
+	projLoc = gl.GetUniformLocation(textureProgram, gl.Str("projection\x00"))
+	if projLoc < 0 {
+		panic("NodeManager: couldn't find 'projection' uniform variable")
+	}
+	pm = projection.Matrix().Matrix()
+	gl.UniformMatrix4fv(projLoc, 1, false, &pm[0])
+
+	viewLoc = gl.GetUniformLocation(textureProgram, gl.Str("view\x00"))
+	if viewLoc < 0 {
+		panic("NodeManager: couldn't find 'view' uniform variable")
+	}
+	gl.UniformMatrix4fv(viewLoc, 1, false, &view.Matrix()[0])
+
+	modelQuadLoc := gl.GetUniformLocation(textureProgram, gl.Str("model\x00"))
+	if modelQuadLoc < 0 {
+		panic("World: couldn't find 'model' uniform variable")
+	}
+
+	// -----------------------------------------------------------
 
 	gl.ClearColor(0.25, 0.25, 0.25, 1.0)
 
@@ -48,18 +113,23 @@ func main() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		gl.UseProgram(defaultProgram)
-
+		gl.UniformMatrix4fv(modelTriLoc, 1, false, &mo[0])
 		bindVao(triVao)
 		drawShape(triVao, indicesTri, window, defaultProgram)
 
+		modelTri.SetRotation(angle * degreeToRadians)
+		modelTri.TranslateBy2Comps(100.0, 0.0)
+		modelTri.ScaleByComp(25.0, 25.0, 1.0)
+		angle++
+		gl.UseProgram(textureProgram)
+		gl.UniformMatrix4fv(modelQuadLoc, 1, false, &moq[0])
 		bindTexture(quadTbo)
 		bindVao(quadVao)
-		gl.UseProgram(textureProgram)
-
 		drawTexture(quadVao, quadTbo, indicesQuad, window, defaultProgram)
 
 		glfw.PollEvents()
 		window.SwapBuffers()
+
 		time.Sleep(time.Millisecond)
 	}
 }
@@ -210,6 +280,45 @@ func buildQuadTexture(textureAtlas *TextureAtlas) (vao, tbo, vbo uint32) {
 // Lerp returns a the value between min and max given t = 0->1
 func lerp(min, max, t float64) float64 {
 	return min*(1.0-t) + max*t
+}
+
+func buildProjection() *Projection {
+	projection := NewCamera()
+
+	// This projection contains centering "built in". You don't need
+	// a view matrix as long as your not interested in moving the view.
+	// Otherwise you would need to rebuilt the projection. Typically
+	// a second view-matrix is used for controlling a "camera".
+	// sH := float32(height) / 2
+	// sW := float32(width) / 2
+	// projection.SetProjection(
+	// 	-sH, -sW, // bottom,left
+	// 	sH, sW, //top,right
+	// 	-1.0, 1.0)
+
+	// This projection is "just" a projection without any centering.
+	projection.SetProjection(
+		0.0, 0.0, // bottom,left
+		float32(height), float32(width), //top,right
+		-1.0, 1.0) //0.1, 100.0
+
+	return projection
+}
+
+func buildView() IMatrix4 {
+	centered := true
+	offsetX := float32(0.0)
+	offsetY := float32(0.0)
+
+	if centered {
+		offsetX = float32(width) / 2.0
+		offsetY = float32(height) / 2.0
+	}
+
+	view := NewMatrix4()
+	view.SetTranslate3Comp(offsetX, offsetY, 0.5)
+
+	return view
 }
 
 /*
