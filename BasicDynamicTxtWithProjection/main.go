@@ -215,12 +215,12 @@ var (
 )
 
 func buildQuadTexture(textureAtlas *TextureAtlas) (vao, tbo, vbo uint32) {
-	// --------- Scope capturing STARTs here -------------------
 	vao = makeVao()
 
 	// Activate VBO buffer while in the VAOs scope
 	vbo = makeVbo()
 
+	// --------- Scope capturing STARTs here -------------------
 	bindVao(vao)
 
 	//       vector-space
