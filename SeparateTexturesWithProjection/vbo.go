@@ -25,9 +25,9 @@ func bindVbo(points []float32, vbo uint32) {
 	gl.EnableVertexAttribArray(vertexInputAttrb)
 }
 
-func bindTextureVbo(points []float32, vbo uint32) {
+func bindTextureVbo(points *[]float32, vbo uint32) {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.DYNAMIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(*points), gl.Ptr(*points), gl.DYNAMIC_DRAW)
 
 	sizeOfFloat := int32(4)
 
@@ -56,8 +56,8 @@ func bindTextureVbo(points []float32, vbo uint32) {
 }
 
 // Update moves any modified data to the buffer.
-func updateTextureVbo(data []float32, vbo uint32) {
+func updateTextureVbo(data *[]float32, vbo uint32) {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferSubData(gl.ARRAY_BUFFER, 0, len(data)*4, gl.Ptr(data))
+	gl.BufferSubData(gl.ARRAY_BUFFER, 0, len(*data)*4, gl.Ptr(*data))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 }

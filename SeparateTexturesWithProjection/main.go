@@ -198,7 +198,7 @@ func changeShape(name string, selectedVbo uint32) {
 	quad[i] = coords[3].s
 	quad[i+1] = coords[3].t
 
-	updateTextureVbo(quad, selectedVbo)
+	updateTextureVbo(&quad, selectedVbo)
 }
 
 func drawShape(vao uint32, indices []uint32, window *glfw.Window, program uint32) {
@@ -310,7 +310,7 @@ func buildQuadTexture(textureAtlas *TextureAtlas, subTexture string, indicesQ *[
 	*quadFlt = append(*quadFlt, -0.5, 0.5, 0.0)
 	*quadFlt = append(*quadFlt, coords[3].s, coords[3].t) // uv
 
-	bindTextureVbo(quad, vbo)
+	bindTextureVbo(quadFlt, vbo)
 
 	// Activate EBO buffer while in the VAOs scope
 	makeEbo(indicesQ)
