@@ -1,4 +1,4 @@
-package main
+package api
 
 // IMatrix4 is a 4x4 matrix
 type IMatrix4 interface {

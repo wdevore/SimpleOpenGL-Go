@@ -1,4 +1,4 @@
-texture-atlas.png
+assets/texture-grey-atlas.png
 256x256
 mine|0,64:64,64:64,128:0,128
 green ship|64,192:128,192:128,256:64,256

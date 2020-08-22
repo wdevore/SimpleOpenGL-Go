@@ -1,5 +1,5 @@
 // Package graphics provides visual
-package main
+package display
 
 import "github.com/go-gl/gl/v4.5-core/gl"
 

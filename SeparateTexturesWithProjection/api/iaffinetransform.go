@@ -1,4 +1,4 @@
-package main
+package api
 
 // IAffineTransform represents 2D transforms
 type IAffineTransform interface {

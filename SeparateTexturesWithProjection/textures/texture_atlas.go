@@ -1,4 +1,4 @@
-package main
+package textures
 
 import (
 	"bufio"
@@ -15,7 +15,7 @@ import (
 // s = u;
 // t = 1-v;
 type TextureCoord struct {
-	s, t float32
+	S, T float32
 }
 
 // SubTexture is a block within the image atlas
@@ -92,7 +92,7 @@ func (t *TextureAtlas) Build() {
 			sc := float32(x) / float32(t.width)
 			tc := float32(y) / float32(t.height)
 			// fmt.Println(sc, ",", tc)
-			ts.textureCoords = append(ts.textureCoords, &TextureCoord{s: sc, t: tc})
+			ts.textureCoords = append(ts.textureCoords, &TextureCoord{S: sc, T: tc})
 		}
 
 		t.subTextures = append(t.subTextures, ts)

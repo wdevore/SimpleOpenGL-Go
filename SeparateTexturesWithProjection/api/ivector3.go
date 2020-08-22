@@ -1,4 +1,4 @@
-package main
+package api
 
 // IVector3 is a 3x1 vector
 type IVector3 interface {

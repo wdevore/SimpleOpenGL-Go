@@ -1,4 +1,9 @@
-package main
+package display
+
+import (
+	"SimpleOpenGL-Go/SeparateTexturesWithProjection/api"
+	"SimpleOpenGL-Go/SeparateTexturesWithProjection/maths"
+)
 
 // Projection provides an orthographic projection
 type Projection struct {
@@ -8,18 +13,18 @@ type Projection struct {
 	ratioCorrection          float32
 
 	// Projection matrix (orthographic)
-	matrix IMatrix4
+	matrix api.IMatrix4
 }
 
 // NewCamera construct a Camera
 func NewCamera() *Projection {
 	c := new(Projection)
-	c.matrix = NewMatrix4()
+	c.matrix = maths.NewMatrix4()
 	return c
 }
 
 // Matrix returns internal 4x4 matrix
-func (c *Projection) Matrix() IMatrix4 {
+func (c *Projection) Matrix() api.IMatrix4 {
 	return c.matrix
 }
 

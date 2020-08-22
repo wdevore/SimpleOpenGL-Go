@@ -1,4 +1,4 @@
-package main
+package api
 
 // IPoint represents 2D points
 type IPoint interface {

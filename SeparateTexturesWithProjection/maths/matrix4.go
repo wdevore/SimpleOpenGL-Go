@@ -1,6 +1,7 @@
-package main
+package maths
 
 import (
+	"SimpleOpenGL-Go/SeparateTexturesWithProjection/api"
 	"fmt"
 	"math"
 )
@@ -84,7 +85,7 @@ var tempM0 = NewMatrix4()
 var mulM = NewMatrix4()
 
 // NewMatrix4 creates a Matrix4 initialized to an identity matrix
-func NewMatrix4() IMatrix4 {
+func NewMatrix4() api.IMatrix4 {
 	m := new(matrix4)
 	m.ToIdentity()
 	return m
@@ -101,7 +102,7 @@ func (m *matrix4) Matrix() *([16]float32) {
 
 // TranslateBy adds a translational component to the matrix in the 4th column.
 // The other columns are unmodified.
-func (m *matrix4) Translate(v IVector3) {
+func (m *matrix4) Translate(v api.IVector3) {
 	m.TranslateBy3Comps(v.X(), v.Y(), v.Z())
 }
 
@@ -138,7 +139,7 @@ func (m *matrix4) TranslateBy3Comps(x, y, z float32) {
 
 // SetTranslateByVector sets the translational component to the matrix in the 4th column.
 // The other columns are unmodified.
-func (m *matrix4) SetTranslateUsingVector(v IVector3) {
+func (m *matrix4) SetTranslateUsingVector(v api.IVector3) {
 	m.ToIdentity()
 	m.e[M03] = v.X()
 	m.e[M13] = v.Y()
@@ -156,7 +157,7 @@ func (m *matrix4) SetTranslate3Comp(x, y, z float32) {
 }
 
 // GetTranslation returns the translational components in 'out' Vector3 field.
-func (m *matrix4) GetTranslation(out IVector3) {
+func (m *matrix4) GetTranslation(out api.IVector3) {
 	out.Set3Components(m.e[M03], m.e[M13], m.e[M23])
 }
 
@@ -231,7 +232,7 @@ func (m *matrix4) Rotate(angle float64) {
 
 // SetScale sets the scale components of an identity matrix and captures
 // scale values into Scale property.
-func (m *matrix4) SetScale(v IVector3) {
+func (m *matrix4) SetScale(v api.IVector3) {
 	m.ToIdentity()
 
 	m.e[M00] = v.X()
@@ -260,7 +261,7 @@ func (m *matrix4) SetScale2Comp(sx, sy float32) {
 }
 
 // Scale scales the scale components.
-func (m *matrix4) Scale(v IVector3) {
+func (m *matrix4) Scale(v api.IVector3) {
 	e := tempM0.Matrix()
 
 	e[M00] = v.X()
@@ -320,7 +321,7 @@ func (m *matrix4) GetPsuedoScale() float32 {
 // --------------------------------------------------------------------------
 // Matrix methods
 // --------------------------------------------------------------------------
-func (m *matrix4) SetFromAffine(src IAffineTransform) {
+func (m *matrix4) SetFromAffine(src api.IAffineTransform) {
 	s := src.Matrix()
 	m.e[0] = s[0]
 	m.e[1] = s[1]
@@ -360,7 +361,7 @@ func multiply4(a, b, out *([16]float32)) {
 }
 
 // Multiply4 multiplies a * b and places result into 'out', (i.e. out = a * b)
-func Multiply4(a, b, out IMatrix4) {
+func Multiply4(a, b, out api.IMatrix4) {
 	oe := out.Matrix()
 	ae := a.Matrix()
 	be := b.Matrix()
@@ -368,7 +369,7 @@ func Multiply4(a, b, out IMatrix4) {
 }
 
 // MultiplyAffineM4 multiplies: affine x 4x4.
-func MultiplyAffineM4(a IAffineTransform, b, out IMatrix4) {
+func MultiplyAffineM4(a api.IAffineTransform, b, out api.IMatrix4) {
 	oe := out.Matrix()
 	ae := a.Matrix()
 	be := b.Matrix()
@@ -376,7 +377,7 @@ func MultiplyAffineM4(a IAffineTransform, b, out IMatrix4) {
 }
 
 // MultiplyM4Affine multiplies: 4x4 x affine
-func MultiplyM4Affine(a IMatrix4, b IAffineTransform, out IMatrix4) {
+func MultiplyM4Affine(a api.IMatrix4, b api.IAffineTransform, out api.IMatrix4) {
 	oe := out.Matrix()
 	ae := a.Matrix()
 	be := b.Matrix()
@@ -384,26 +385,26 @@ func MultiplyM4Affine(a IMatrix4, b IAffineTransform, out IMatrix4) {
 }
 
 // Multiply multiplies a * b and places result into this matrix, (i.e. m = a * b)
-func (m *matrix4) Multiply(a, b IMatrix4) {
+func (m *matrix4) Multiply(a, b api.IMatrix4) {
 	Multiply4(a, b, m)
 }
 
 // PreMultiply pre-multiplies 'b' matrix with 'm' and places the result into 'm' matrix.
 // (i.e. m = m * b)
-func (m *matrix4) PreMultiply(b IMatrix4) {
+func (m *matrix4) PreMultiply(b api.IMatrix4) {
 	Multiply4(m, b, mulM)
 	m.Set(mulM)
 }
 
 // PostMultiply post-multiplies 'm' matrix with 'b' and places the result into 'm' matrix.
 // (i.e. m = b * m)
-func (m *matrix4) PostMultiply(b IMatrix4) {
+func (m *matrix4) PostMultiply(b api.IMatrix4) {
 	Multiply4(b, m, mulM)
 	m.Set(mulM)
 }
 
 // MultiplyIntoA multiplies a * b and places result into 'a', (i.e. a = a * b)
-func MultiplyIntoA(a, b IMatrix4) {
+func MultiplyIntoA(a, b api.IMatrix4) {
 	Multiply4(a, b, mulM)
 	a.Set(mulM)
 }
@@ -476,7 +477,7 @@ func (m *matrix4) SetToOrtho(left, right, bottom, top, near, far float32) {
 // --------------------------------------------------------------------------
 
 // Eq does an epsilon compare
-func (m *matrix4) Eq(other IMatrix4) bool {
+func (m *matrix4) Eq(other api.IMatrix4) bool {
 	eq := true
 	o := other.Matrix()
 
@@ -509,14 +510,14 @@ func (m *matrix4) C(i int) float32 {
 }
 
 // Clone returns a clone of this matrix
-func (m *matrix4) Clone() IMatrix4 {
+func (m *matrix4) Clone() api.IMatrix4 {
 	c := new(matrix4)
 	c.Set(m)
 	return c
 }
 
 // Set copies src into this matrix
-func (m *matrix4) Set(src IMatrix4) {
+func (m *matrix4) Set(src api.IMatrix4) {
 	se := src.Matrix()
 
 	m.e[M00] = se[M00]
