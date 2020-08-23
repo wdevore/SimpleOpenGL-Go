@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"image"
 	"image/draw"
+	_ "image/png"
 	"os"
 	"strconv"
 	"strings"
